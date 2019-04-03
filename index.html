@@ -1,0 +1,90 @@
+<html>
+<head>
+<title>Angular Training</title>
+<style>
+#filterDiv input {
+	width: 500px;
+	box-shadow: 0px 0px 3px 1px skyblue;
+	border: 1px solid skyblue;
+	height: 35px;
+	margin-bottom: 20px;
+}
+#filterDiv {
+	margin-right: 400px;
+}
+#filterDiv, #unitTypeDiv {
+	display: inline-block;
+}
+#tableHead {
+	background-color: blue;
+	color: white;
+}
+#tableHead td {
+	padding: 5px 0;
+}
+#itemTable td {
+	width: 400px;
+}
+
+</style>
+<script src="angular.js"></script>
+<script>
+	var app = angular.module('app', []);
+	app.controller('control', function($scope, $window, $http) {
+		$scope.items = [];
+		$http.get("infoJSON.json").then(function(response) {
+			$scope.items = response.data;
+		});
+	});
+
+</script>
+
+</head>
+<body ng-app="app" ng-controller="control">
+	<h1>Lookup App: Unit Search Filter</h1>
+	<br>
+	<div>
+	<div id="filterDiv">
+		<label>Code:</label><br>
+		<input type="text" ng-model="codeInput"><br>
+		<label>Description:</label><br>
+		<input type="text" ng-model="descInput"><br>
+	</div>
+	<div id="unitTypeDiv">
+		<table>
+			<tr>
+				<th>Unit Type</th>
+			</tr>
+			<tr>
+				<td><input type="radio" ng-name="unitType" ng-model="typeSelected" checked>All</td>
+			</tr>
+			<tr>
+				<td><input type="radio" ng-name="unitType" ng-model="typeSelected" ng-value="'Core'">Core</td>
+			</tr>
+			<tr>
+				<td><input type="radio" ng-name="unitType" ng-model="typeSelected" ng-value="'Software Development'">Software Development</td>
+			</tr>
+			<tr>
+				<td><input type="radio" ng-name="unitType" ng-model="typeSelected" ng-value="'Systems Analysis'">Systems Analysis</td>
+			</tr>
+		</table>
+	</div>
+	</div>
+	<div>
+		<table cellspacing="0" id="itemTable">
+			<tr id="tableHead">
+				<td>Code</td>
+				<td>Description</td>
+				<td>Credit Points</td>
+				<td>Type</td>
+			</tr>
+			<tr ng-repeat="item in items | filter: {type:typeSelected, code:codeInput, desc:descInput}">
+				<td>{{item.code}}</td>
+				<td>{{item.desc}}</td>
+				<td>{{item.cp}}</td>
+				<td>{{item.type}}</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
